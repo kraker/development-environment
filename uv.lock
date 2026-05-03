@@ -180,21 +180,6 @@ wheels = [
 ]
 
 [[package]]
-name = "ansible-template"
-version = "0.1.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "ansible-dev-tools" },
-    { name = "prek" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "ansible-dev-tools", specifier = ">=26.4.6" },
-    { name = "prek", specifier = ">=0.3.11" },
-]
-
-[[package]]
 name = "attrs"
 version = "26.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -397,6 +382,23 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/70/75/158e494e4c08dc05e039da5bb48553826bd26c23930cf8d3cd5f21fa8921/cryptography-47.0.0-cp38-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:80887c5cbd1774683cb126f0ab4184567f080071d5acf62205acb354b4b753b7", size = 4912060, upload-time = "2026-04-24T19:54:30.869Z" },
     { url = "https://files.pythonhosted.org/packages/06/bd/0a9d3edbf5eadbac926d7b9b3cd0c4be584eeeae4a003d24d9eda4affbbd/cryptography-47.0.0-cp38-abi3-win32.whl", hash = "sha256:ed67ea4e0cfb5faa5bc7ecb6e2b8838f3807a03758eec239d6c21c8769355310", size = 3248487, upload-time = "2026-04-24T19:54:33.494Z" },
     { url = "https://files.pythonhosted.org/packages/60/80/5681af756d0da3a599b7bdb586fac5a1540f1bcefd2717a20e611ddade45/cryptography-47.0.0-cp38-abi3-win_amd64.whl", hash = "sha256:835d2d7f47cdc53b3224e90810fb1d36ca94ea29cc1801fb4c1bc43876735769", size = 3755737, upload-time = "2026-04-24T19:54:35.408Z" },
+]
+
+[[package]]
+name = "development-environment"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "ansible-core" },
+    { name = "ansible-dev-tools" },
+    { name = "prek" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "ansible-core", specifier = ">=2.20.5" },
+    { name = "ansible-dev-tools", specifier = ">=26.4.6" },
+    { name = "prek", specifier = ">=0.3.11" },
 ]
 
 [[package]]

@@ -1,2 +1,8 @@
+# .gitignore
+
+# uv
 .venv/
+
+# ansible-navigator
 ansible-navigator.log
+*-artifact-*.json
