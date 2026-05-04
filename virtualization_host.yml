@@ -1,0 +1,14 @@
+---
+- name: Virtualization Host
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Install "Virtualization Host" group
+      ansible.builtin.dnf:
+        name: '@Virtualization Host'
+        state: present
+      notify: Reboot
+
+  handlers:
+    - name: Reboot
+      ansible.builtin.reboot:

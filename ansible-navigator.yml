@@ -2,6 +2,7 @@
 ansible-navigator:
   mode: stdout
   execution-environment:
+    enabled: false
     pull:
       policy: missing
   playbook-artifact:

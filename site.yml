@@ -1,4 +1,9 @@
 ---
-
 - name: Install packages
   ansible.builtin.import_playbook: packages.yml
+
+- name: Setup Virtualization Host
+  ansible.builtin.import_playbook: virtualization_host.yml
+
+- name: Install Vagrant
+  ansible.builtin.import_playbook: vagrant.yml

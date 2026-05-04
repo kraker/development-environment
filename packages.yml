@@ -1,5 +1,5 @@
 ---
-- name: Packages
+- name: Install Packages
   hosts: localhost
   become: true
   vars:
@@ -12,9 +12,3 @@
       ansible.builtin.package:
         name: "{{ package_list }}"
         state: present
-
-    # TODO: Install Packer
-    # TODO: Install Terraform
-    # TODO: Install AWS CLI
-    # TODO: Install kubectl
-    # TODO: Install dotfiles

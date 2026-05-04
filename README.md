@@ -2,6 +2,16 @@
 
 Automate setting up local or remote development environments with Ansible.
 
+## Supported OS's
+
+So far only support for OS's in the Enterprise Linux ecosystem (dnf &
+rpm-based).
+
+* Fedora 41+
+* RHEL 8+
+* Rocky (untested)
+* AlmaLinux (untested)
+
 ## Install Prerequisites
 
 This project requires Git, uv, and Podman.
@@ -56,6 +66,24 @@ Deploy a local (or remote) development environment:
 source .venv/bin/activate       # Activate venv if you haven't already
 ansible-navigator run site.yml
 ```
+
+## Roadmap
+
+* HashiCorp
+  + [X] Install Vagrant
+  + [ ] Install Packer
+  + [ ] Install Terraform
+* [ ] Install VirtualBox
+* [ ] Install AWS CLI
+* [ ] Install kubectl
+* [ ] Install dotfiles
+* [ ] Install Quarto
+* [ ] Install Hugo
+* [ ] Install starship CLI prompt
+* Multi-OS Support
+  + [ ] Debian/Ubuntu
+  + [ ] Arch
+  + [ ] NixOs
 
 ## LICENSE
 
