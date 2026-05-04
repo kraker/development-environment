@@ -1,4 +1,8 @@
 ---
+
+- name: Install CRB + EPEL
+  ansible.builtin.import_playbook: epel.yml
+
 - name: Install Packages
   ansible.builtin.import_playbook: packages.yml
 
@@ -6,10 +10,9 @@
   ansible.builtin.import_playbook: prompt.yml
 
 - name: Setup Virtualization Host
-  ansible.builtin.import_playbook: virtualization_host.yml
+  ansible.builtin.import_playbook: virtualization.yml
 
+# Order matters. vagrant-libvirt needs libvirt-devel which is only available if
+# CodeReady Builder (CRB) is enabled.
 - name: Install Vagrant
   ansible.builtin.import_playbook: vagrant.yml
-
-- name: Install EPEL
-  ansible.builtin.import_playbook: epel.yml

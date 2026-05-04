@@ -1,7 +1,22 @@
 ---
+# https://docs.fedoraproject.org/en-US/epel/getting-started/
 
-- name: EPEL
+- name: CRB + EPEL
   hosts: localhost
   become: true
+  pre_tasks:
+    - name: Enable CRB (Rocky/Alma/CentOS Stream)
+      community.general.dnf_config_manager:
+        name: crb
+        state: enabled
+      when: ansible_facts['distribution'] in ['Rocky', 'AlmaLinux', 'CentOS']
+
+    - name: Enable CodeReady Builder (RHEL)
+      community.general.rhsm_repository:
+        # yamllint disable-line rule:line-length
+        name: "codeready-builder-for-rhel-{{ ansible_facts['distribution_major_version'] }}-{{ ansible_facts['architecture'] }}-rpms"
+        state: enabled
+      when: ansible_facts['distribution'] == 'RedHat'
+
   roles:
     - role: geerlingguy.repo-epel
