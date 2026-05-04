@@ -1,0 +1,16 @@
+---
+
+- name: Install starship prompt
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Fetch starship installer
+      ansible.builtin.get_url:
+        url: https://starship.rs/install.sh
+        dest: /tmp/starship-install.sh
+        mode: "0755"
+
+    - name: Run starship installer
+      ansible.builtin.command: /tmp/starship-install.sh -y
+      args:
+        creates: /usr/local/bin/starship

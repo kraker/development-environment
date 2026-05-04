@@ -1,6 +1,9 @@
 ---
-- name: Install packages
+- name: Install Packages
   ansible.builtin.import_playbook: packages.yml
+
+- name: Setup Prompt
+  ansible.builtin.import_playbook: prompt.yml
 
 - name: Setup Virtualization Host
   ansible.builtin.import_playbook: virtualization_host.yml

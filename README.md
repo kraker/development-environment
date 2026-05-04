@@ -80,6 +80,7 @@ ansible-navigator run site.yml
 * [ ] Install Quarto
 * [ ] Install Hugo
 * [ ] Install starship CLI prompt
+* [ ] Install VSCode
 * Multi-OS Support
   + [ ] Debian/Ubuntu
   + [ ] Arch
