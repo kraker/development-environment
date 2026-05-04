@@ -5,3 +5,5 @@ profile: moderate
 
 exclude_paths:
   - collections/ansible_collections/
+  - roles/geerlingguy.*
+  - virtualbox.yml # temp ignore unstaged

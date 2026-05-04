@@ -8,4 +8,6 @@ ansible-navigator.log
 *-artifact-*.json
 
 # ansible
+.ansible/
 collections/ansible_collections/
+roles/geerlingguy.*

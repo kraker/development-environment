@@ -1,0 +1,7 @@
+---
+
+- name: EPEL
+  hosts: localhost
+  become: true
+  roles:
+    - role: geerlingguy.repo-epel

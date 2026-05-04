@@ -79,7 +79,8 @@ ansible-navigator run site.yml
 * [ ] Install dotfiles
 * [ ] Install Quarto
 * [ ] Install Hugo
-* [ ] Install starship CLI prompt
+* [X] Install starship CLI prompt
+* [X] Install EPEL
 * [ ] Install VSCode
 * Multi-OS Support
   + [ ] Debian/Ubuntu

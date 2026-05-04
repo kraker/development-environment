@@ -10,3 +10,6 @@
 
 - name: Install Vagrant
   ansible.builtin.import_playbook: vagrant.yml
+
+- name: Install EPEL
+  ansible.builtin.import_playbook: epel.yml
