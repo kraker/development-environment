@@ -12,6 +12,10 @@
 - name: Setup Virtualization Host
   ansible.builtin.import_playbook: virtualization.yml
 
+# VirtualBox doesn't work alongside KVM/libvirt.
+# - name: Install VirtualBox
+#   ansible.builtin.import_playbook: virtualbox.yml
+
 # Order matters. vagrant-libvirt needs libvirt-devel which is only available if
 # CodeReady Builder (CRB) is enabled.
 - name: Install Vagrant

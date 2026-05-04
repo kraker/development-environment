@@ -1,4 +1,5 @@
 ---
+
 - name: Virtualization Host
   hosts: localhost
   become: true
@@ -7,8 +8,3 @@
       ansible.builtin.dnf:
         name: '@Virtualization Host'
         state: present
-      notify: Reboot
-
-  handlers:
-    - name: Reboot
-      ansible.builtin.reboot:

@@ -73,7 +73,7 @@ ansible-navigator run site.yml
   + [X] Install Vagrant
   + [ ] Install Packer
   + [ ] Install Terraform
-* [ ] Install VirtualBox
+* [ ] Install VirtualBox (partially implemented)
 * [ ] Install AWS CLI
 * [ ] Install kubectl
 * [ ] Install dotfiles
@@ -82,10 +82,17 @@ ansible-navigator run site.yml
 * [X] Install starship CLI prompt
 * [X] Install EPEL
 * [ ] Install VSCode
+
+### Someday/Maybe?
+
 * Multi-OS Support
   + [ ] Debian/Ubuntu
   + [ ] Arch
   + [ ] NixOs
+* Ansible CI testing with Molecule? Probably only makes sense if the project
+  would be more widely utilized.
+* Bootstrap project setup with `curl | bash` install script? Notably installing
+  Git, uv, Podman and project setup aren't automated...
 
 ## LICENSE
 

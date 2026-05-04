@@ -1,0 +1,186 @@
+---
+# DISCLAIMER: Claude AI draft of vb install. Only partially tested...
+
+# virtualbox.yml
+#
+# Installs VirtualBox on RHEL 10 (and EL10-family clones).
+#
+# What it does:
+#   1. Enables CodeReady Builder (CRB) — prerequisite for EPEL
+#   2. Installs EPEL 10 — provides dkms
+#   3. Installs kernel-devel/headers matching the running kernel
+#   4. Adds Oracle's VirtualBox repo + signing key
+#   5. Installs VirtualBox; DKMS auto-builds vboxdrv on install
+#   6. (Optional) adds users to vboxusers, installs the Extension Pack (PUEL)
+#
+# Requirements:
+#   - community.general collection (for rhsm_repository on RHEL proper)
+#   - Target system already registered with subscription-manager (RHEL only)
+#   - If kernel was recently updated, reboot first so kernel-devel matches
+#     ansible_kernel on this run.
+#
+# Secure Boot note:
+#   If UEFI Secure Boot is enabled, vboxdrv will not load until the modules
+#   are signed and the key is enrolled via MOK. This playbook detects SB
+#   and warns but does NOT handle signing — that needs a reboot with
+#   human interaction to confirm key enrollment.
+# yamllint disable rule:line-length
+
+- name: Install VirtualBox on RHEL
+  hosts: localhost
+  become: true
+
+  vars:
+    # Major.minor branch. Use "VirtualBox-7.1" for the previous line.
+    virtualbox_package: VirtualBox-7.2
+
+    # Users to add to vboxusers (needed for USB passthrough, raw disk).
+    virtualbox_users:
+      - stovepipe
+      - github-runner
+
+    # Set to true to install the Oracle Extension Pack. Note: PUEL license.
+    install_extension_pack: false
+    # Must match the installed VirtualBox version exactly.
+    extension_pack_version: "7.2.8"
+
+  tasks:
+    # ---------------------------------------------------------------------
+    # Preflight
+    # ---------------------------------------------------------------------
+    # - name: Sanity check — RHEL 10 family
+    #   ansible.builtin.assert:
+    #     that:
+    #       - ansible_os_family == 'RedHat'
+    #       - ansible_distribution_major_version == '10'
+    #     fail_msg: >-
+    #       Expected RHEL 10 family, got
+    #       {{ ansible_distribution }} {{ ansible_distribution_major_version }}.
+
+    # - name: Detect Secure Boot state
+    #   ansible.builtin.command: mokutil --sb-state
+    #   register: sb_state
+    #   changed_when: false
+    #   failed_when: false
+
+    # - name: Warn if Secure Boot is enabled
+    #   ansible.builtin.debug:
+    #     msg: >-
+    #       Secure Boot is ENABLED. VirtualBox kernel modules will not load
+    #       until they are signed and the signing key is enrolled via MOK.
+    #       Either disable Secure Boot, or sign the modules manually after
+    #       this playbook completes (see if-not-true-then-false guide).
+    #   when: "'SecureBoot enabled' in (sb_state.stdout | default(''))"
+
+    # ---------------------------------------------------------------------
+    # CRB + EPEL
+    # ---------------------------------------------------------------------
+    # - name: Ensure dnf-plugins-core is present (for config-manager)
+    #   ansible.builtin.dnf:
+    #     name: dnf-plugins-core
+    #     state: present
+
+    # - name: Enable CodeReady Builder repo (RHEL proper)
+    #   community.general.rhsm_repository:
+    #     name: "codeready-builder-for-rhel-10-{{ ansible_architecture }}-rpms"
+    #     state: enabled
+    #   when: ansible_distribution == 'RedHat'
+
+    # - name: Enable CRB repo (CentOS Stream / Rocky / Alma)
+    #   ansible.builtin.command: dnf config-manager --set-enabled crb
+    #   register: crb_enable
+    #   changed_when: "'enabled' in crb_enable.stdout | lower"
+    #   when: ansible_distribution != 'RedHat'
+
+    # - name: Import EPEL 10 signing key
+    #   ansible.builtin.rpm_key:
+    #     key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-10
+    #     state: present
+
+    # - name: Install EPEL release package
+    #   ansible.builtin.dnf:
+    #     name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm
+    #     state: present
+
+    # ---------------------------------------------------------------------
+    # Build dependencies for DKMS
+    # ---------------------------------------------------------------------
+    # - name: Install build deps + DKMS
+    #   ansible.builtin.dnf:
+    #     name:
+    #       - gcc
+    #       - make
+    #       - perl
+    #       - "kernel-devel-{{ ansible_kernel }}"
+    #       - "kernel-headers-{{ ansible_kernel }}"
+    #       - elfutils-libelf-devel
+    #       - bzip2
+    #       - dkms
+    #     state: present
+
+    # ---------------------------------------------------------------------
+    # Oracle VirtualBox repo + install
+    # ---------------------------------------------------------------------
+    - name: Import Oracle VirtualBox RPM signing key
+      ansible.builtin.rpm_key:
+        key: https://www.virtualbox.org/download/oracle_vbox_2016.asc
+        state: present
+
+    - name: Add Oracle VirtualBox repo
+      ansible.builtin.get_url:
+        url: https://download.virtualbox.org/virtualbox/rpm/rhel/virtualbox.repo
+        dest: /etc/yum.repos.d/virtualbox.repo
+        mode: '0644'
+        owner: root
+        group: root
+
+    - name: Install VirtualBox
+      ansible.builtin.dnf:
+        name: "{{ virtualbox_package }}"
+        state: present
+
+    # ---------------------------------------------------------------------
+    # vboxusers group membership
+    # ---------------------------------------------------------------------
+    - name: Ensure vboxusers group exists
+      ansible.builtin.group:
+        name: vboxusers
+        state: present
+
+    - name: Add users to vboxusers
+      ansible.builtin.user:
+        name: "{{ item }}"
+        groups: vboxusers
+        append: true
+      loop: "{{ virtualbox_users }}"
+
+    # ---------------------------------------------------------------------
+    # Optional: Extension Pack (PUEL)
+    # ---------------------------------------------------------------------
+    - name: Extension Pack
+      when: install_extension_pack
+      block:
+        - name: List currently installed extension packs
+          ansible.builtin.command: VBoxManage list extpacks
+          register: installed_extpacks
+          changed_when: false
+
+        - name: Download Extension Pack
+          ansible.builtin.get_url:
+            # yamlling disable-line rule:line-length
+            url: "https://download.virtualbox.org/virtualbox/{{ extension_pack_version }}/Oracle_VirtualBox_Extension_Pack-{{ extension_pack_version }}.vbox-extpack"
+            dest: "/tmp/Oracle_VirtualBox_Extension_Pack-{{ extension_pack_version }}.vbox-extpack"
+            mode: '0644'
+          when: extension_pack_version not in installed_extpacks.stdout
+
+        # `printf y` accepts the PUEL prompt non-interactively. If you'd
+        # rather pass --accept-license=<sha256>, the license hash is the
+        # SHA-256 of ExtPack-license.txt inside the .vbox-extpack tarball.
+        - name: Install Extension Pack (auto-accepting PUEL)
+          ansible.builtin.shell:
+            cmd: >-
+              printf 'y\n' |
+              VBoxManage extpack install --replace
+              /tmp/Oracle_VirtualBox_Extension_Pack-{{ extension_pack_version }}.vbox-extpack
+          when: extension_pack_version not in installed_extpacks.stdout
+          changed_when: true
