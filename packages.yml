@@ -1,4 +1,5 @@
 ---
+
 - name: Install Packages
   hosts: localhost
   become: true
@@ -7,6 +8,8 @@
       - git
       - vim
       - podman
+      - nodejs-npm
+
   tasks:
     - name: Install packages
       ansible.builtin.package:

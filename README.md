@@ -8,7 +8,7 @@ So far only support for OS's in the Enterprise Linux ecosystem (dnf &
 rpm-based).
 
 * Fedora 41+
-* RHEL 8+
+* RHEL 8+ (only tested on RHEL 10)
 * Rocky (untested)
 * AlmaLinux (untested)
 
