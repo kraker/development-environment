@@ -71,8 +71,9 @@ ansible-navigator run site.yml
 
 * HashiCorp
   + [X] Install Vagrant
-  + [ ] Install Packer
-  + [ ] Install Terraform
+  + [X] Install Packer
+  + [X] Install Terraform
+  + [X] Install HCP CLI
 * [ ] Install VirtualBox (partially implemented)
 * [ ] Install AWS CLI
 * [ ] Install kubectl
@@ -94,6 +95,7 @@ ansible-navigator run site.yml
   would be more widely utilized.
 * Bootstrap project setup with `curl | bash` install script? Notably installing
   Git, uv, Podman and project setup aren't automated...
+* [ ] Install OpenTofu?
 
 ## LICENSE
 

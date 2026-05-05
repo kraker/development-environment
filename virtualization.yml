@@ -8,3 +8,16 @@
       ansible.builtin.dnf:
         name: '@Virtualization Host'
         state: present
+
+    # Needs CRB which is enabled in epel.yml. Required to build any
+    # tool that links against libvirt (e.g. vagrant-libvirt).
+    - name: Install libvirt-devel
+      ansible.builtin.dnf:
+        name: libvirt-devel
+        state: present
+
+    - name: Add user to libvirt group
+      ansible.builtin.user:
+        name: "{{ ansible_facts['user_id'] }}"
+        groups: libvirt
+        append: true

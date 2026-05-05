@@ -15,7 +15,7 @@ uv sync                                                         # Python deps vi
 source .venv/bin/activate
 uv run prek install --prepare-hooks                             # pre-commit hooks (prek = Rust prek)
 ansible-galaxy collection install -r collections/requirements.yml
-ansible-galaxy role install -r collections/requirements.yml     # NOTE: roles/requirements.yml is the actual file; README documents collections/requirements.yml — both exist
+ansible-galaxy role install -r roles/requirements.yml
 ```
 
 Run the full playbook:
@@ -29,7 +29,7 @@ Run a single sub-playbook (each top-level `*.yml` is independently runnable):
 
 ```bash
 ansible-navigator run packages.yml
-ansible-navigator run vagrant.yml
+ansible-navigator run hashicorp.yml
 ```
 
 Lint (matches CI):
@@ -48,8 +48,8 @@ Playbook order in `site.yml` is load-bearing:
 1. `epel.yml` — enables CRB (CodeReady Builder) and installs EPEL. Branches by distro: `community.general.dnf_config_manager` for Rocky/Alma/CentOS, `community.general.rhsm_repository` for RHEL proper.
 2. `packages.yml` — base packages (git, vim, podman, nodejs-npm).
 3. `prompt.yml` — starship via upstream installer.
-4. `virtualization.yml` — `@Virtualization Host` dnf group.
-5. `vagrant.yml` — HashiCorp repo + Vagrant + `vagrant-libvirt` plugin. Requires `libvirt-devel`, which requires CRB from step 1.
+4. `virtualization.yml` — `@Virtualization Host` dnf group, plus `libvirt-devel` and libvirt group membership (libvirt-devel requires CRB from step 1; needed by any tool linking against libvirt, e.g. vagrant-libvirt).
+5. `hashicorp.yml` — adds the HashiCorp RPM repo, then installs Packer, Terraform, HCP CLI, and Vagrant from it. Second play installs `vagrant-libvirt` and `vagrant-registration` plugins as the invoking user (depends on `libvirt-devel` from step 4).
 
 `virtualbox.yml` is **deliberately excluded** from `site.yml` (KVM/libvirt and VirtualBox conflict on the same host) and from `.ansible-lint` (`exclude_paths`). Most of its tasks are commented out — treat it as partial/draft.
 

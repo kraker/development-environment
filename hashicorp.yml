@@ -1,0 +1,62 @@
+---
+
+- name: Install HashiCorp tools
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Import HashiCorp GPG key
+      ansible.builtin.rpm_key:
+        key: https://rpm.releases.hashicorp.com/gpg
+        state: present
+
+    - name: Add HashiCorp stable repository
+      ansible.builtin.yum_repository:
+        name: hashicorp
+        description: HashiCorp Stable - $basearch
+        # yamllint disable-line rule:line-length
+        baseurl: https://rpm.releases.hashicorp.com/RHEL/$releasever/$basearch/stable
+        gpgkey: https://rpm.releases.hashicorp.com/gpg
+        gpgcheck: true
+        enabled: true
+        state: present
+
+    - name: Install Packer
+      ansible.builtin.dnf:
+        name: packer
+        state: present
+
+    - name: Install Terraform
+      ansible.builtin.dnf:
+        name: terraform
+        state: present
+
+    - name: Install HCP CLI
+      ansible.builtin.dnf:
+        name: hcp
+        state: present
+
+    - name: Install Vagrant
+      ansible.builtin.dnf:
+        name: vagrant
+        state: present
+
+- name: Configure Vagrant plugins
+  hosts: localhost
+  tasks:
+    - name: Check installed vagrant plugins
+      ansible.builtin.command: vagrant plugin list
+      register: vagrant_plugins
+      changed_when: false
+
+    - name: Install vagrant-libvirt plugin
+      when: "'vagrant-libvirt' not in vagrant_plugins.stdout"
+      ansible.builtin.command: vagrant plugin install vagrant-libvirt
+      register: plugin_install
+      changed_when: "'Installed the plugin' in plugin_install.stdout"
+
+    # https://github.com/projectatomic/adb-vagrant-registration
+    - name: Install vagrant-registration plugin
+      when: "'vagrant-registration' not in vagrant_plugins.stdout"
+      ansible.builtin.command: vagrant plugin install vagrant-registration
+      register: plugin_install
+      changed_when: "'Installed the plugin' in plugin_install.stdout"

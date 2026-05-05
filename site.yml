@@ -18,8 +18,8 @@
 
 # Order matters. vagrant-libvirt needs libvirt-devel which is only available if
 # CodeReady Builder (CRB) is enabled.
-- name: Install Vagrant
-  ansible.builtin.import_playbook: vagrant.yml
+- name: Install HashiCorp tools
+  ansible.builtin.import_playbook: hashicorp.yml
 
 - name: Install GitHub CLI
   ansible.builtin.import_playbook: gh.yml
