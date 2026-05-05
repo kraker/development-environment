@@ -1,0 +1,25 @@
+---
+
+- name: Install GitHub CLI
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Import GitHub CLI GPG key
+      ansible.builtin.rpm_key:
+        key: https://cli.github.com/packages/githubcli-archive-keyring.asc
+        state: present
+
+    - name: Add GitHub CLI repository
+      ansible.builtin.yum_repository:
+        name: gh-cli
+        description: packages for the GitHub CLI
+        baseurl: https://cli.github.com/packages/rpm
+        gpgkey: https://cli.github.com/packages/githubcli-archive-keyring.asc
+        gpgcheck: true
+        enabled: true
+        state: present
+
+    - name: Install gh
+      ansible.builtin.dnf:
+        name: gh
+        state: present

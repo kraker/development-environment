@@ -20,3 +20,6 @@
 # CodeReady Builder (CRB) is enabled.
 - name: Install Vagrant
   ansible.builtin.import_playbook: vagrant.yml
+
+- name: Install GitHub CLI
+  ansible.builtin.import_playbook: gh.yml

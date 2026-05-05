@@ -55,7 +55,7 @@ Install Ansible collection and role dependencies:
 
 ```bash
 ansible-galaxy collection install -r collections/requirements.yml
-ansible-galaxy role install -r collections/requirements.yml
+ansible-galaxy role install -r roles/requirements.yml
 ```
 
 ## Development Environment
@@ -79,6 +79,7 @@ ansible-navigator run site.yml
 * [ ] Install dotfiles
 * [ ] Install Quarto
 * [ ] Install Hugo
+* [X] Install GH CLI
 * [X] Install starship CLI prompt
 * [X] Install EPEL
 * [ ] Install VSCode
