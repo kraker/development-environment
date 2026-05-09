@@ -389,14 +389,12 @@ name = "development-environment"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "ansible-core" },
     { name = "ansible-dev-tools" },
     { name = "prek" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "ansible-core", specifier = ">=2.20.5" },
     { name = "ansible-dev-tools", specifier = ">=26.4.6" },
     { name = "prek", specifier = ">=0.3.11" },
 ]

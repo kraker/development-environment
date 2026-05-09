@@ -3,6 +3,11 @@
 - name: Virtualization Host
   hosts: localhost
   become: true
+  vars:
+    # Resolved on the controller side, before `become` switches us to root,
+    # so this captures the real invoking user (github-runner in CI, the
+    # shell user locally).
+    invoking_user: "{{ lookup('env', 'USER') }}"
   tasks:
     - name: Install "Virtualization Host" group
       ansible.builtin.dnf:
@@ -18,6 +23,6 @@
 
     - name: Add user to libvirt group
       ansible.builtin.user:
-        name: "{{ ansible_facts['user_id'] }}"
+        name: "{{ invoking_user }}"
         groups: libvirt
         append: true

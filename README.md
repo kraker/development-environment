@@ -78,7 +78,7 @@ ansible-navigator run site.yml
 * [ ] Install AWS CLI
 * [ ] Install kubectl
 * [ ] Install dotfiles
-* [ ] Install Quarto
+* [X] Install Quarto
 * [ ] Install Hugo
 * [X] Install GH CLI
 * [X] Install starship CLI prompt

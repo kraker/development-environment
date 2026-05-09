@@ -6,6 +6,12 @@
 - name: Install Packages
   ansible.builtin.import_playbook: packages.yml
 
+- name: Install language tooling
+  ansible.builtin.import_playbook: lang.yml
+
+- name: Install Quarto
+  ansible.builtin.import_playbook: quarto.yml
+
 - name: Setup Prompt
   ansible.builtin.import_playbook: prompt.yml
 

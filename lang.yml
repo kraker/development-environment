@@ -1,0 +1,19 @@
+---
+
+- name: Languages
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Common language support
+      ansible.builtin.dnf:
+        name:
+          - "@Development Tools"
+          - cmake
+        state: present
+
+    - name: Install R + deps
+      ansible.builtin.dnf:
+        name:
+          - R
+          - libxml2-devel  # Needed by R's "languageserver"
+        state: present

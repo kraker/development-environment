@@ -1,0 +1,75 @@
+---
+
+- name: Install Quarto
+  hosts: localhost
+  become: true
+  vars:
+    quarto_download_metadata_url: >-
+      https://quarto.org/docs/download/_download.json
+    quarto_rpm_arch_map:
+      x86_64: x86_64
+      aarch64: aarch64
+  tasks:
+    - name: Check installed Quarto version
+      ansible.builtin.command: quarto --version
+      register: quarto_installed_version
+      changed_when: false
+      failed_when: false
+
+    - name: Fetch Quarto release metadata
+      ansible.builtin.uri:
+        url: "{{ quarto_download_metadata_url }}"
+        return_content: true
+      register: quarto_release
+      changed_when: false
+
+    - name: Assert Quarto supports this architecture
+      ansible.builtin.assert:
+        that:
+          - ansible_facts['architecture'] in quarto_rpm_arch_map
+        fail_msg: >-
+          Quarto RPM install is only configured for {{
+          quarto_rpm_arch_map.keys() | list | join(', ') }}. Detected {{
+          ansible_facts['architecture'] }}.
+
+    - name: Select Quarto RPM asset
+      vars:
+        quarto_rpm_arch: >-
+          {{ quarto_rpm_arch_map[ansible_facts['architecture']] }}
+        quarto_rpm_asset_name: >-
+          {{ 'quarto-' ~ quarto_release.json.version ~ '-linux-' ~
+          quarto_rpm_arch ~ '.rpm' }}
+      ansible.builtin.set_fact:
+        quarto_rpm_assets: >-
+          {{
+            quarto_release.json.assets
+            | selectattr('name', 'equalto', quarto_rpm_asset_name)
+            | list
+          }}
+
+    - name: Assert Quarto RPM asset exists
+      ansible.builtin.assert:
+        that:
+          - quarto_rpm_assets | length == 1
+        fail_msg: >-
+          Could not find the expected Quarto RPM asset in {{
+          quarto_download_metadata_url }}.
+
+    - name: Store Quarto RPM asset metadata
+      ansible.builtin.set_fact:
+        quarto_rpm_asset: "{{ quarto_rpm_assets[0] }}"
+
+    - name: Download Quarto RPM
+      when: quarto_installed_version.stdout != quarto_release.json.version
+      ansible.builtin.get_url:
+        url: "{{ quarto_rpm_asset.download_url }}"
+        dest: "/tmp/{{ quarto_rpm_asset.name }}"
+        checksum: "sha256:{{ quarto_rpm_asset.checksum }}"
+        mode: "0644"
+
+    - name: Install Quarto
+      when: quarto_installed_version.stdout != quarto_release.json.version
+      ansible.builtin.dnf:
+        name: "/tmp/{{ quarto_rpm_asset.name }}"
+        state: present
+        disable_gpg_check: true
