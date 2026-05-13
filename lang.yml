@@ -9,11 +9,13 @@
         name:
           - "@Development Tools"
           - cmake
+          - libuv-devel
         state: present
 
     - name: Install R + deps
       ansible.builtin.dnf:
         name:
           - R
+          - R-core-devel
           - libxml2-devel  # Needed by R's "languageserver"
         state: present
