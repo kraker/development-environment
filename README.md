@@ -1,5 +1,9 @@
 # development-environment
 
+> [!NOTE]
+> This repository has moved to Codeberg and is archived on GitHub.
+> The current project lives at <https://codeberg.org/kraker/development-environment>.
+
 Automate setting up local or remote development environments with Ansible.
 
 ## Supported OS's
